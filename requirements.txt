@@ -1,0 +1,6 @@
+deep_translator==1.11.4
+itemadapter==0.8.0
+newspaper3k==0.2.8
+pymongo==4.3.3
+Requests==2.31.0
+Scrapy==2.9.0
