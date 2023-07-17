@@ -2,8 +2,8 @@
 scrape google news top story page using Python Scrapy
 
 ### Install requirements:
-python 3.11.2
-Mongodb
+* python 3.11.2
+* Mongodb
 ```bash
 pip install -r requirements.txt
 ```
