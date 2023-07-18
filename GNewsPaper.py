@@ -36,7 +36,7 @@ def save_article(x, a):
         os.mkdir(path, 0o666)
     if not os.path.exists(path+"/figure.webp"):
         if x['figure'] is not None:
-            data = requests.get(x['figure']).content
+            data = requests.get(x['figure'], timeout=(5,5)).content
             if data is not None:
                 with open(path+"/figure.webp", 'wb') as f:
                     f.write(data)
@@ -74,7 +74,8 @@ def get_icon(x):
 
     path = "/root/GNewsFront/public/news_resource/icons/" + icon_title
     if not os.path.exists(path):
-        os.mkdir(path, 0o666)
+        print(icon_title)
+        os.makedirs(path, 0o666)
 
     url = ""
     file = ""
@@ -88,10 +89,13 @@ def get_icon(x):
     if os.path.exists(file):
         return
 
-    data = requests.get(url).content
-    with open(file, 'wb') as f:
-        f.write(data)
-        f.close()
+    data = requests.get(url, timeout=(5,5)).content
+    if data is not None:
+        with open(file, 'wb') as f:
+            f.write(data)
+            f.close()
+    else:
+        print("get icon failed", url, icon_title)
 
 
 def get_headline():
@@ -137,7 +141,7 @@ def get_headline():
             text_cn += "\n\n"
         #print(text,text_cn)
         has_top_image = fetch_img(x, article)
-        icon = get_icon(x)
+        get_icon(x)
         a = {
             "figure": "/news_resource/pics/"+x['link_hash']+"/figure.webp" if x['figure'] is not None else None,
             "published": True,
