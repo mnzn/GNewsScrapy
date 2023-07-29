@@ -26,7 +26,25 @@ my_translator = GoogleTranslator(source='auto', target='zh-CN')
 def GT(text, batch=False):
     time.sleep(3)
     if batch:
-        return my_translator.translate_batch(text)
+        #print("list len:", len(text))
+        words = 0;
+        for x in text:
+            words += len(x)
+        if words < 5000:
+            return my_translator.translate_batch(text)
+        words = 0
+        tmp = []
+        index = 0
+        for x in text:
+            words += len(x)
+            tmp.append(x)
+            index += 1
+            if words > 4500:
+                break
+        if words>=5000:
+            tmp.pop()
+            index -= 1
+        return GT(tmp, True) + GT(text[index:], True)
     else:
         return my_translator.translate(text=text)
 
@@ -176,5 +194,6 @@ client.close()
 #docker run --name mongo --network mongoCluster -d --restart unless-stopped -p 127.0.0.1:27017:27017 -v /root/mongo-data/:/data/db mongodb/mongodb-community-server --replSet rs0 --bind_ip localhost,mongo
 #docker exec -it mongo mongosh
 #db.headlines.createIndex({"final_link":1},{unique:true})
+#db.Post.createIndex({"url":1},{unique:true})
 #mkdir /root/GNewsFront/public/news_resource/pics/
 #mkdir /root/GNewsFront/public/news_resource/icons/
