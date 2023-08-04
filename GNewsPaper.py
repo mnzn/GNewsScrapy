@@ -115,6 +115,8 @@ def get_icon(x):
     else:
         print("get icon failed", url, icon_title)
 
+def split_string(string, length):
+    return [string[i:i + length] for i in range(0, len(string), length)]
 
 def get_headline():
     myquery={"downloaded":False,"skip":False}
@@ -132,14 +134,25 @@ def get_headline():
             continue
 
 
-        text_lines = article.text.splitlines()
-        text_lines = [x for x in text_lines if len(x) != 0]
-        #print(text_lines)
+        text_lines_tmp = article.text.splitlines()
+        text_lines = []
+        #text_lines = [x for x in text_lines if len(x) != 0]
+        for i,t in enumerate(text_lines_tmp):
+            if len(t) == 0:
+                continue
+            if len(t)>5000:
+                text_lines+=split_string(t, 4900)
+            else:
+                text_lines.append(t)
+
+        #for i,t in enumerate(text_lines):
+        #    print(i,len(t),t)
         if not text_lines:
             headlines_collection.update_one({"_id":x["_id"]},{"$set":{"skip":True}})
             print("text_lines empty,set skip:", x["final_link"], text_lines)
             continue
 
+        #print(x['title'])
         text_lines_cn = GT([x['title']]+text_lines, True)
         #print(text_lines_cn)
         title_cn = text_lines_cn[0]
